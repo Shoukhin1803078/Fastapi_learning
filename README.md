@@ -2,7 +2,7 @@
 
 
 # Instructions:
-For MySQL, you'll need to install these dependencies:
+```For MySQL, you'll need to install these dependencies:
 bashCopypip install fastapi uvicorn sqlalchemy mysql-connector-python pydantic
 Before running the application:
 
@@ -31,7 +31,7 @@ GET http://localhost:8000/users/ - Get all users
 
 
 
-Would you like me to add any additional features or explain any part in more detail?
+Would you like me to add any additional features or explain any part in more detail?```
 
 
 
@@ -40,7 +40,7 @@ Would you like me to add any additional features or explain any part in more det
 
 # SQL Code
 
-
+```
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -48,22 +48,22 @@ CREATE TABLE users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Create an index on the name column for faster searches
-CREATE INDEX idx_users_name ON users(name);
+CREATE INDEX idx_users_name ON users(name);```
 
 
 
 # models/model.py
-from sqlalchemy import Column, Integer, String
+```from sqlalchemy import Column, Integer, String
 from config.database import Base
 
 class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False)```
 
 # schemas/schema.py
-from pydantic import BaseModel
+```from pydantic import BaseModel
 
 class UserBase(BaseModel):
     name: str
@@ -75,10 +75,10 @@ class UserResponse(UserBase):
     id: int
     
     class Config:
-        orm_mode = True
+        orm_mode = True```
 
 # controllers/controller.py
-from fastapi import APIRouter, Depends, HTTPException
+```from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from config.database import get_db
@@ -98,10 +98,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/users/", response_model=List[UserResponse])
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
-    return users
+    return users```
 
 # config/database.py
-from sqlalchemy import create_engine
+```from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -121,14 +121,14 @@ def get_db():
     try:
         yield db
     finally:
-        db.close()
+        db.close()```
 
 # main.py
 ```from fastapi import FastAPI
 from controllers.controller import router
 from config.database import engine, Base
 
-app = FastAPI(title="User Info System")```
+app = FastAPI(title="User Info System")
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -138,4 +138,4 @@ app.include_router(router, tags=["users"])
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)```
