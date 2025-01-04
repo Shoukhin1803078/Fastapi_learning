@@ -124,11 +124,11 @@ def get_db():
         db.close()
 
 # main.py
-from fastapi import FastAPI
+```from fastapi import FastAPI
 from controllers.controller import router
 from config.database import engine, Base
 
-app = FastAPI(title="User Info System")
+app = FastAPI(title="User Info System")```
 
 # Create tables
 Base.metadata.create_all(bind=engine)
