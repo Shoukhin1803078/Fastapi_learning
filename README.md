@@ -1,6 +1,6 @@
 # Fastapi_learning
 
-This is alamin
+This is alamin  i am from alamintokdercse@gmail.com
 # Instructions:
 ```For MySQL, you'll need to install these dependencies:
 bashCopypip install fastapi uvicorn sqlalchemy mysql-connector-python pydantic
