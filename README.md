@@ -1,9 +1,7 @@
 # FastAPI User Information System
-this is fast1_user_info_in_db
-Prepared by alamin
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
+
+
 
 A robust RESTful API built with FastAPI and MySQL for managing user information. This project follows the MVC (Model-View-Controller) pattern and provides a clean, organized structure for handling user data through HTTP endpoints.
 
@@ -109,7 +107,7 @@ project_root/
        finally:
            db.close()
    ```
-
+<!--  -->
 2. Create database tables:
    ```sql
    CREATE TABLE users (
