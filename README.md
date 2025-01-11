@@ -1,261 +1,276 @@
-# FastAPI User Information System
-Prepared by alamin shoukhin
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+steps
+create engine->session->table->migrate
 
-A robust RESTful API built with FastAPI and MySQL for managing user information. This project follows the MVC (Model-View-Controller) pattern and provides a clean, organized structure for handling user data through HTTP endpoints.
+steps like 
+create engine 
+create session
+create table 
+migrate
 
-## 📑 Table of Contents
-- [✨ Features](#-features)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [📁 Project Structure](#-project-structure)
-- [⚙️ Installation](#️-installation)
-- [🔧 Configuration](#-configuration)
-- [📝 Usage](#-usage)
-- [📚 API Documentation](#-api-documentation)
-- [💻 Code Structure](#-code-structure)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
 
-## ✨ Features
-* 🚀 RESTful API endpoints for user management
-* 🗄️ MySQL database integration with SQLAlchemy ORM
-* 🏗️ MVC architecture for clean code organization
-* 📖 Automatic Swagger/OpenAPI documentation
-* ✅ Input validation using Pydantic models
-* 🔄 Connection pooling for optimal database performance
-* ⚡ Asynchronous request handling
 
-## 🛠️ Tech Stack
-* [FastAPI](https://fastapi.tiangolo.com/) - Modern, fast web framework
-* [MySQL](https://www.mysql.com/) - Database
-* [SQLAlchemy](https://www.sqlalchemy.org/) - ORM
-* [Pydantic](https://pydantic-docs.helpmanual.io/) - Data validation
-* [Uvicorn](https://www.uvicorn.org/) - ASGI server
 
-## 📁 Project Structure
-```
-project_root/
-│
-├── controllers/
-│   ├── __init__.py
-│   └── controller.py
-│
-├── models/
-│   ├── __init__.py
-│   └── model.py
-│
-├── schemas/
-│   ├── __init__.py
-│   └── schema.py
-│
-├── config/
-│   ├── __init__.py
-│   └── database.py
-│
-├── main.py
-├── requirements.txt
-└── README.md
-```
+# create_table.py
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-## ⚙️ Installation
+engine = create_engine("postgresql://postgres:your_password@localhost:5432/testing")
+Session = sessionmaker(bind=engine)
+Base = declarative_base()
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/fastapi-user-system.git
-   cd fastapi-user-system
-   ```
-
-2. Create and activate virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Set up MySQL database:
-   ```sql
-   CREATE DATABASE dbname;
-   ```
-
-## 🔧 Configuration
-
-1. Create `config/database.py`:
-   ```python
-   from sqlalchemy import create_engine
-   from sqlalchemy.ext.declarative import declarative_base
-   from sqlalchemy.orm import sessionmaker
-
-   SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://username:password@localhost/dbname"
-
-   engine = create_engine(
-       SQLALCHEMY_DATABASE_URL,
-       pool_size=5,
-       max_overflow=10
-   )
-   SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-   Base = declarative_base()
-
-   def get_db():
-       db = SessionLocal()
-       try:
-           yield db
-       finally:
-           db.close()
-   ```
-
-2. Create database tables:
-   ```sql
-   CREATE TABLE users (
-       id INT AUTO_INCREMENT PRIMARY KEY,
-       name VARCHAR(100) NOT NULL,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-   CREATE INDEX idx_users_name ON users(name);
-   ```
-
-## 📝 Usage
-
-1. Start the server:
-   ```bash
-   python main.py
-   ```
-
-2. Access the API:
-   * API endpoints: `http://localhost:8000`
-   * Swagger UI: `http://localhost:8000/docs`
-   * ReDoc: `http://localhost:8000/redoc`
-
-3. Example API calls:
-   ```bash
-   # Create user
-   curl -X POST "http://localhost:8000/users/" \
-        -H "Content-Type: application/json" \
-        -d '{"name": "John Doe"}'
-
-   # Get all users
-   curl "http://localhost:8000/users/"
-   ```
-
-## 📚 API Documentation
-
-### Endpoints
-
-#### POST /users/
-Create a new user
-* Request Body:
-  ```json
-  {
-      "name": "string"
-  }
-  ```
-* Response:
-  ```json
-  {
-      "id": "integer",
-      "name": "string"
-  }
-  ```
-
-#### GET /users/
-Get all users
-* Response:
-  ```json
-  [
-      {
-          "id": "integer",
-          "name": "string"
-      }
-  ]
-  ```
-
-## 💻 Code Structure
-
-### Models (`models/model.py`)
-```python
-from sqlalchemy import Column, Integer, String
-from config.database import Base
-
-class User(Base):
-    __tablename__ = "users"
+class Student(Base):
+    __tablename__ = 'student'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    roll = Column(Integer, unique=True)
+    age = Column(Integer)
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-```
+    def __repr__(self):
+        return f"Name: {self.name}, Roll: {self.roll}, Age: {self.age}"
 
-### Controllers (`controllers/controller.py`)
-```python
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
-from config.database import get_db
-from models.model import User
-from schemas.schema import UserCreate, UserResponse
+if __name__ == "__main__":
+    Base.metadata.create_all(engine)
+    print("Table created successfully!")
 
-router = APIRouter()
+# ----------------------------------------
 
-@router.post("/users/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = User(name=user.name)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+# insert.py
+from create_table import Student, Session
 
-@router.get("/users/", response_model=List[UserResponse])
-def get_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return users
-```
-
-### Schemas (`schemas/schema.py`)
-```python
-from pydantic import BaseModel
-
-class UserBase(BaseModel):
-    name: str
-
-class UserCreate(UserBase):
-    pass
-
-class UserResponse(UserBase):
-    id: int
+def insert_student():
+    session = Session()
+    name = input("Enter student name: ")
+    roll = int(input("Enter roll number: "))
+    age = int(input("Enter age: "))
     
-    class Config:
-        orm_mode = True
-```
+    student = Student(name=name, roll=roll, age=age)
+    session.add(student)
+    session.commit()
+    print(f"Added student: {student}")
+    session.close()
 
-## 🤝 Contributing
+if __name__ == "__main__":
+    insert_student()
 
-1. Fork the repository
-2. Create your feature branch:
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m 'Add some amazing feature'
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-5. Open a Pull Request
+# ----------------------------------------
 
-## 📄 License
+# update.py
+from create_table import Student, Session
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+def show_all_students():
+    session = Session()
+    students = session.query(Student).all()
+    print("\nAll Students:")
+    for student in students:
+        print(student)
+    session.close()
 
----
+def update_student():
+    session = Session()
+    roll = int(input("Enter roll number to update: "))
+    student = session.query(Student).filter_by(roll=roll).first()
+    
+    if student:
+        new_age = int(input("Enter new age: "))
+        student.age = new_age
+        session.commit()
+        print(f"Updated student: {student}")
+    else:
+        print(f"No student found with roll number {roll}")
+    session.close()
 
-### Show your support
+if __name__ == "__main__":
+    show_all_students()
+    update_student()
+    show_all_students()
 
-Give a ⭐️ if this project helped you!
+# ----------------------------------------
+
+# delete.py
+from create_table import Student, Session
+
+def delete_student():
+    session = Session()
+    roll = int(input("Enter roll number to delete: "))
+    student = session.query(Student).filter_by(roll=roll).first()
+    
+    if student:
+        session.delete(student)
+        session.commit()
+        print(f"Deleted student with roll number {roll}")
+    else:
+        print(f"No student found with roll number {roll}")
+    session.close()
+
+if __name__ == "__main__":
+    show_all_students()
+    delete_student()
+    show_all_students()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create_table.py (Database Setup):
+
+pythonCopy# Import necessary modules
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+# Create database engine
+engine = create_engine("postgresql://postgres:your_password@localhost:5432/testing")
+# Create session factory
+Session = sessionmaker(bind=engine)
+# Create base class for models
+Base = declarative_base()
+
+# Define Student model
+class Student(Base):
+    __tablename__ = 'student'  # Table name in database
+    
+    # Define columns
+    id = Column(Integer, primary_key=True)  # Auto-incrementing ID
+    name = Column(String(50))               # Name with max length 50
+    roll = Column(Integer, unique=True)     # Unique roll number
+    age = Column(Integer)                   # Age
+    
+    # String representation of Student object
+    def __repr__(self):
+        return f"Name: {self.name}, Roll: {self.roll}, Age: {self.age}"
+
+# Create tables in database
+if __name__ == "__main__":
+    Base.metadata.create_all(engine)
+
+insert.py (Create Operation):
+
+pythonCopy# Import model and session
+from create_table import Student, Session
+
+def insert_student():
+    # Start new session
+    session = Session()
+    
+    # Get user input
+    name = input("Enter student name: ")
+    roll = int(input("Enter roll number: "))
+    age = int(input("Enter age: "))
+    
+    # Create new student object
+    student = Student(name=name, roll=roll, age=age)
+    session.add(student)      # Add to session
+    session.commit()          # Save to database
+    print(f"Added student: {student}")
+    session.close()           # Close session
+
+update.py (Read and Update Operations):
+
+pythonCopyfrom create_table import Student, Session
+
+# Read operation
+def show_all_students():
+    session = Session()
+    students = session.query(Student).all()  # Get all students
+    print("\nAll Students:")
+    for student in students:
+        print(student)
+    session.close()
+
+# Update operation
+def update_student():
+    session = Session()
+    roll = int(input("Enter roll number to update: "))
+    # Find student by roll number
+    student = session.query(Student).filter_by(roll=roll).first()
+    
+    if student:
+        new_age = int(input("Enter new age: "))
+        student.age = new_age    # Update age
+        session.commit()         # Save changes
+        print(f"Updated student: {student}")
+    else:
+        print(f"No student found with roll number {roll}")
+    session.close()
+
+delete.py (Delete Operation):
+
+pythonCopyfrom create_table import Student, Session
+
+def delete_student():
+    session = Session()
+    roll = int(input("Enter roll number to delete: "))
+    # Find student by roll number
+    student = session.query(Student).filter_by(roll=roll).first()
+    
+    if student:
+        session.delete(student)   # Mark for deletion
+        session.commit()          # Perform deletion
+        print(f"Deleted student with roll number {roll}")
+    else:
+        print(f"No student found with roll number {roll}")
+    session.close()
+Key Concepts:
+
+Engine: Connection to the database
+Session: Manages database transactions
+Base: Parent class for all models
+Model: Defines table structure
+CRUD Operations:
+
+Create: session.add()
+Read: session.query()
+Update: Direct attribute modification
+Delete: session.delete()
+
+
+
+The workflow follows a consistent pattern:
+
+Start a session
+Perform database operation
+Commit changes (if any)
+Close the session
+
+Each file builds on create_table.py, which sets up the database structure and provides the model and session factory for other operations.

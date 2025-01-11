@@ -1,0 +1,6 @@
+# pip install fastapi uvicorn sqlalchemy psycopg2-binary
+sqlalchemy
+psycopg2-binary
+fastapi
+uvicorn
+
